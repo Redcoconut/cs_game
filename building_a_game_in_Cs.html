@@ -1,0 +1,604 @@
+<html>
+<head>
+<style>
+
+.code {
+	background-color: #f2f2f2;
+	width: 100%;
+	font-family: Menlo, Monaco, "Courier New", Courier, monospace;
+	color: rgb(41, 41, 41);
+	padding: 10px;
+}
+</style>
+</head>
+<body >
+	<div style="width: 110%; background-color: #00b2a8; height: 100px; margin-left: -10px; margin-top: -10px;">
+		<h2 style="text-align: center; margin-top: 0px; padding-top: 25px;">C# with Ari, a great new website thats only got this one page</h2>
+	</div>
+	<div style="padding-left: 25%; width: 50%;">
+		<h1>
+			Making a game with C#: An Ari tutorial
+		</h1>
+
+		<h4>
+			Introduction
+		</h4>
+		<p>
+			As a guy who has studied object oriented programming for less that a single semester,
+			I am clearly the leading expert in this subject, and you should therefore not question anything I say or do during this tutorial.<br>So with your hopes up high, lets get started!<br>
+			<br>Today we are going to look at making a game in C#.<br>
+			Making this game is a really great way to lean about, and really understand Object Oriented Programming, and its principles like Abstraction, Polymorphism, Encapsulation and Inheritance and put them to use in a fun project.<br>
+			Here is a screenshot of what you should accomplish by the end of this article:
+			<br>
+		</p>
+		<img style="width: 100%;" src="images/final_piewgame.png"></img>
+		<h4>Getting started</h4>
+		<p>
+			To get started, you will need the following:
+			<ul>
+				<li>A computer</li>
+				<li>A text editor (I will be using Jetbrains Rider)</li>
+				<li>C# builder of some kind</li>
+				<li>Dotnet installed</li>
+				<li>Splashkit installed</li>
+				<li>Download this zip file to follow along with the tutorial (I cant actually put the zip, because i can only upload a pdf it seems)</li>
+
+			</ul>
+			Ok do you have that?<br>
+			Good.
+		</p>
+		<p>
+			To help you through this process, here is a UML diagram of what we are going to be building:
+		</p>
+		<img style="width: 100%" src="images/Final_UML_Diagram.png"></img>
+		<p>Scary! But its not as bad as it... Well it could be worse.</p>
+
+		<h4>Creating the Game</h4>
+		<p>The first thing we need to do is create a new C# project<br>
+		On linux, it looks something like this:<br>
+		First, lets create a new folder (using a terminal because its cool):</p>
+		<p class="code">
+			$ mkdir piewgame
+		</p>
+		<p>Now lets head into that folder, and create a new dotnet project:</p>
+		<p class="code">
+			$ cd piewgame<br><br>
+			$ skm dotnet new
+		</p>
+		<p>Thats it! We have created a project ready for us to bent to our will!<br>
+			Lets open it in Jetbrains Rider and take a look shall we?
+		</p>
+		<p class="code">
+			$ rider piewgame.csproj
+		</p>
+		<p>Yup, we have a Program.cs file, as well as a lib folder.
+			<br>
+			Just to make sure everything is working, lets add a print to our Program.cs Main, and run it.
+		</p>
+		<div class="code">
+			<pre style="margin:0em; overflow:auto;"><code style="font-family:Consolas,&quot;Courier New&quot;,Courier,Monospace; font-size:10pt; color:#000000;"><span style="color:#0000ff;">using</span> System;
+<span style="color:#0000ff;">using</span> SplashKitSDK;
+
+<span style="color:#0000ff;">namespace</span>  piewgame
+{
+    <span style="color:#0000ff;">public</span> <span style="color:#0000ff;">class</span> Program
+    {
+        <span style="color:#0000ff;">public</span> <span style="color:#0000ff;">static</span> <span style="color:#0000ff;">void</span> Main()
+        {
+            Console.WriteLine(<span style="color:#a31515;">"Yup, its working."</span>);
+        }
+    }
+}</code></pre>
+	</div>
+	<p>And the output:</p>
+	<div class="code"><p>
+	Yup, its working.<br>
+Process finished with exit code 0.</p></div>
+	<p>Perfect.<br>Now we can get into the real stuff</p>
+	<h4>
+		The real stuff
+	</h4>
+	<p>Lets start by creating our abstract "SpaceThing" class.<br>
+	This class will be the building block for the all the objects we see on screen.<br>
+	Abstract classes are created like this:</p>
+	<div class="code"><pre style="margin:0em; overflow:auto;"><code style="font-family:Consolas,&quot;Courier New&quot;,Courier,Monospace; font-size:10pt; color:#000000;"><span style="color:#0000ff;">public</span> <span style="color:#0000ff;">abstract</span> <span style="color:#0000ff;">class</span> SpaceThing</code></pre>
+	</div>
+	<p>For those who dont know, an <b>abstract</b> class, is a class that cannot be used to create objects.<br>
+	Instead, we use <b>abstract</b> classes as the building blocks for other classes.<br>
+	But why use an abstract class at all?<br>
+	Well, we have 4 space objects, a comet, a bullet, the player and the other ship.<br>
+	As you can imagine, these all share some similar properties:<br>they each have a position, a direction and a speed (which we combine into velocity).<br>
+	they each have to be able to move, and draw themselves, as well as detect crashes.<br>
+	This is what we call <b>polymorphism</b>; when something (like a space object) appears in several different forms (like a Comet or a spaceship)</p>
+
+	<p>Alright, so lets fill in our <b>abstract</b> class with everything our space objects will have in common:
+	</p>
+	<div class="code"><pre style="margin:0em; overflow:auto;"><code style="font-family:Consolas,&quot;Courier New&quot;,Courier,Monospace; font-size:10pt; color:#000000;"><span style="color:#0000ff;">private</span> <span style="color:#0000ff;">double</span>[] _position;
+<span style="color:#0000ff;">private</span> <span style="color:#0000ff;">double</span>[] _velocity;
+<span style="color:#0000ff;">private</span> <span style="color:#0000ff;">int</span> _radius;
+
+<span style="color:#0000ff;">public</span> SpaceThing(<span style="color:#0000ff;">double</span>[] position, <span style="color:#0000ff;">double</span>[] velocity, <span style="color:#0000ff;">int</span> radius)
+{
+    _position = position;
+    _velocity = velocity;
+    _radius = radius;
+}</code></pre></div>
+	<p>You may notice that i've added the property 'radius', i'll explain that one later (but you can take a guess now and see if you were right later).
+	</p>
+	<p>Now, some of these private properties actually need to be accessed from other classes, so lets fix that. No, we dont just set the variables to public,
+		thats not how we do things (for some reason). We use get set properties.
+	</p>
+	<div class="code"><pre style="margin:0em; overflow:auto;"><code style="font-family:Consolas,&quot;Courier New&quot;,Courier,Monospace; font-size:10pt; color:#000000;"><span style="color:#0000ff;">public</span> <span style="color:#0000ff;">double</span>[] Velocity
+{
+    <span style="color:#0000ff;">get</span> { <span style="color:#0000ff;">return</span> _velocity; }
+    <span style="color:#0000ff;">set</span> { _velocity = value;  }
+}
+<span style="color:#0000ff;">public</span> <span style="color:#0000ff;">double</span>[] Position
+{
+    <span style="color:#0000ff;">get</span> { <span style="color:#0000ff;">return</span> _position; }
+    <span style="color:#0000ff;">set</span> { _position = value; }
+}</code></pre></div>
+	<p>There we go, now any class can access those variables.<br><br>Alright, now lets deal with these methods that our space things share.<br>
+		Since each of our space things are going to deal with moving and drawing and so on in a different manner, we get to use abstract methods. Yay.
+	</p>
+	<div class="code"><pre style="margin:0em; overflow:auto; "><code style="font-family:Consolas,&quot;Courier New&quot;,Courier,Monospace; font-size:10pt; color:#000000;"><span style="color:#0000ff;">public</span> <span style="color:#0000ff;">abstract</span> <span style="color:#0000ff;">void</span> Draw(Window w);
+<span style="color:#0000ff;">public</span> <span style="color:#0000ff;">abstract</span> <span style="color:#0000ff;">void</span> Move();
+<span style="color:#0000ff;">public</span> <span style="color:#0000ff;">abstract</span> <span style="color:#0000ff;">void</span> DetectCrash(<span style="color:#0000ff;">int</span>[] position, <span style="color:#0000ff;">int</span> radius);</code></pre></div>
+	<p>Great. We are done with out SpaceThing class.
+	</p>
+
+	<h4>Rocket Science</h4>
+	<p>Lets build our player next. This is probably going to be the hardest part, so strap in.<br><br>
+		For our player spaceship, we dont just want a plain old triangle that moves around do we? No.<br>
+		We want to see fire roar and bullets spark! "How?", you ask? Animation, the beautiful concept behind the gif.
+	</p>
+	<p>
+		First, lets create the Player.cs file, this class will use the abstract class Spacething to make things easier using "class Player : SpaceThing".<br>
+		And lets add all those classes that we set as abstract in out SpaceThing class.
+	</p>
+	<div class="code">
+		<pre style="margin:0em; overflow:auto;"><code style="font-family:Consolas,&quot;Courier New&quot;,Courier,Monospace; font-size:10pt; color:#000000;">
+<span style="color:#0000ff;">using</span> System;
+<span style="color:#0000ff;">using</span> SplashKitSDK;
+
+<span style="color:#0000ff;">namespace</span> piewgame
+{
+    <span style="color:#0000ff;">public</span> <span style="color:#0000ff;">class</span> Player : SpaceThing
+    {
+
+        <span style="color:#0000ff;">public</span> Player(<span style="color:#0000ff;">double</span>[] position, <span style="color:#0000ff;">double</span>[] velocity, <span style="color:#0000ff;">int</span> radius) : <span style="color:#0000ff;">base</span>(position, velocity, radius)
+        {
+
+        }
+
+
+
+        <span style="color:#0000ff;">public</span> <span style="color:#0000ff;">override</span> <span style="color:#0000ff;">void</span> Move()
+        {
+
+        }
+
+        <span style="color:#0000ff;">public</span> <span style="color:#0000ff;">int</span> Rotation
+        {
+
+        }
+
+        <span style="color:#0000ff;">public</span> <span style="color:#0000ff;">override</span> <span style="color:#0000ff;">void</span> DetectCrash(<span style="color:#0000ff;">int</span>[] position, <span style="color:#0000ff;">int</span> radius)
+        {
+
+        }
+
+        <span style="color:#0000ff;">public</span> PlayerStates PlayerState
+        {
+
+        }
+
+        <span style="color:#0000ff;">public</span> <span style="color:#0000ff;">override</span> <span style="color:#0000ff;">void</span> Draw(Window w)
+        {
+
+
+        }
+
+    }
+}</code></pre>
+	</div>
+	<p>
+		Great. We have a nice template to build on.<br>
+		We will come back to Player in a second, lets talk about the Animation.
+		An animation is just a few images (or many images) shown in order of time. There's many ways we can do this in our game,
+		but today we will be doing it the official SplashKit way.<br>
+		SplashKit is a great package for fasilitating GUI control from C# so lets take a look at how it works:<br>
+		In our Program.cs, we will first create a SplashKit window like so:
+	</p>
+	<div class="code">
+		<pre style="margin:0em; overflow:auto;"><code style="font-family:Consolas,&quot;Courier New&quot;,Courier,Monospace; font-size:10pt; color:#000000;">Window w = <span style="color:#0000ff;">new</span> Window(<span style="color:#a31515;">"Animation Test"</span>, 1080, 720);
+		Screen screen = <span style="color:#0000ff;">new</span> Screen(w);</code></pre>
+	</div>
+	<p>And we can create a loop, that we can use for detecting inputs, and that will terminate if the user closes the GUI:</p>
+	<div class="code">
+		<pre style="margin:0em; overflow:auto;"><code style="font-family:Consolas,&quot;Courier New&quot;,Courier,Monospace; font-size:10pt; color:#000000;"><span style="color:#0000ff;">while</span>(! w.CloseRequested)
+{
+...
+}</code></pre>
+	</div>
+	<p>We dont actually want all the elements of the screen to be controlled by the Program.cs do we?<br>
+		No, we dont, so lets create a Screen.cs, to deal with calling the Draw.<br>
+	Done that? Good, now lets leave its Initialisation command for the moment, and deal with the Move and the Draw:</p>
+	<div class="code">
+		<pre style="margin:0em; overflow:auto;"><code style="font-family:Consolas,&quot;Courier New&quot;,Courier,Monospace; font-size:10pt; color:#000000;"><span style="color:#0000ff;">public</span> <span style="color:#0000ff;">void</span> Move(Player player)
+{
+    player.Move();
+}
+<span style="color:#0000ff;">public</span> <span style="color:#0000ff;">void</span> Draw(Window w, Player player)
+{
+    <span style="color:#008000;">// Clear screen and set background color:</span>
+    w.Clear(Color.Black);
+
+    <span style="color:#008000;">// Update the animation</span>
+    player.Draw(w);
+    <span style="color:#008000;">// Refresh screen at target FPS</span>
+    w.Refresh(60);
+    SplashKit.ProcessEvents();
+
+}</code></pre>
+	</div>
+
+	<p>Ok, so, on Move(), we ask player to move, simple.<br>
+	On Draw(), we get the Window, and the Player as inputs. We clear the screen, and set the background color to black,
+	we ask th player to draw itself, we refresh the screen, while setting the FPS to 60, and we ask SplashKit to process events.<br>
+	<br>What is the FPS you may ask?  Well, (Storytime) in the olden days, games didnt have the FPS set, they would usually run as fast as they could,
+	on the hardware they were made run on. Eventually, the hardware for games got faster, and to the dismay of those who tired to
+	play old games on the new hardware, the game would run super fast, and they would lose instantly.<br>
+	<br>So knowing that people have slower, or faster computers than you, we set the FPS (Frames Per Second) of the loop, so our game works at the same speed
+	regardless if its run on a crappy computer, or the supercomputer at Swinburne.<br>
+	<br>
+	Ok you may have noticed that we called player methods that we havnt created yet, so lets circle back to player and make them.<br>
+	<br>
+	Ok, now is the hard part. We are going to leave C# for a moment, so get ready.<br>
+	Open up your resources folder i gave you, and you will see this image:
+	</p>
+
+	<img style="width: 50%; background-color:black"  src="images/Player.png"></img>
+
+	<p>
+		What is it?<br>
+		Firstly, I dont want to hear anything about it being an ugly looking spaceship!<br>
+		You try drawing for the first time with nothing but Microsoft Paint, and a mouse.<br>What is it? My best.<br>
+		Secondly, its an image full of images, and its what we will use to create the animations for the spaceship.<br><br>
+		There are 4 states of the spaceship: The first frame, is the Idle state, the 2nd to 4th: the Flying state,
+		the second row (minus the empty space) is the shooting state, and finally the 3rd row (again, minus the empty box) is both shooting and flying state.
+		But how do we tell this to SplashKit? With an animation file called "Player.txt".
+		<br>
+		So lets create the Player.txt file like so and ill explain what we are doing:
+	</p>
+	<p class="code">
+		SplashKit Animation<br>
+//Multi-frame: ranges are in[]<br>
+//[a-b] = numbers from a to b inclusive<br>
+//[a,b,c] = explicit values<br>
+//[a-b,c] = combination<br><br>
+//Idle<br>
+f:0,0,1,<br><br>
+//Flying<br>
+f:[1-3],[1-3],5,<br><br>
+//Shooting<br>
+f:[4-6],[5-7],5,<br><br>
+//ShootFlying<br>
+f:[7-9],[9-11],5,<br><br>
+//identifiers<br>
+i:Idle,0<br>
+i:Flying,1<br>
+i:Shooting,4<br>
+i:ShootFlying,7<br>
+	</p>
+	<p>
+		The first line tells SplashKit that this is an animation file.<br>
+		The "f" represents an animation, taking a look at the one called "Shooting", they work like tihs:<br><br>
+		The first number is the "Frame", think of it like one big animation, there cannor be frame overlaps between any animation.<br>
+		[4-6] meants the 4th to 6th frame.<br>
+		<br>
+		The second number is the location of the image we want to be the first frame (the count starts at 0).
+		So lets say we want the image in the second column, second row, its number would be 4 (length of a row) + 1 (positoin in row) = 5.<br>
+		[5-7] means the 5th image to the 7th image.<br> If we want we can also have animations that skip frames using a comma instead of a dash like so:
+		[5,7-9] This includes the images 5,7,8 and 9 but skipped 6.<br><br>
+
+		Finally the third number is the duration of the frame, this is how many times we will loop the code before it should head to the next frame.
+		<br><br>
+		The "i" represents the identifiers. This is what the code will use to select an animation.<br>
+		As you can see, we write the name of the animation, and then the number of the Frame in which the animation starts.<br><br>
+
+		Ok, we go to: piewgame/bin/Debug/netcoreapp3.1/ create two new folders "animations" and "images". Put the animation file inside animations and the image inside images.<br>
+		Phiew! Done with that mess, we can go back to good o'l C#.<br><br>
+
+		Lets edit the Player.cs file and add some SplashKit code:
+	</p>
+	<div class="code"><pre style="margin:0em; overflow:auto;"><code style="font-family:Consolas,&quot;Courier New&quot;,Courier,Monospace; font-size:10pt; color:#000000;"><span style="color:#0000ff;">private</span> AnimationScript _playerShipScript;
+<span style="color:#0000ff;">private</span> Animation _playerAnimation;
+<span style="color:#0000ff;">private</span> Bitmap _playerShip;
+<span style="color:#0000ff;">private</span> DrawingOptions _opt;
+<span style="color:#0000ff;">private</span> <span style="color:#0000ff;">int</span> _rotation;
+<span style="color:#0000ff;">public</span> <span style="color:#0000ff;">enum</span> PlayerStates
+{
+    Idle,
+    Flying,
+    Shooting,
+    ShootFlying
+}
+
+<span style="color:#0000ff;">private</span> PlayerStates _playerState;
+<span style="color:#0000ff;">public</span> Player(<span style="color:#0000ff;">double</span>[] position, <span style="color:#0000ff;">double</span>[] velocity, <span style="color:#0000ff;">int</span> radius) : <span style="color:#0000ff;">base</span>(position, velocity, radius)
+{
+    _playerShip = SplashKit.LoadBitmap(<span style="color:#a31515;">"PlayerBmp"</span>,<span style="color:#a31515;">"Player.png"</span>);
+    _playerShip.SetCellDetails(471, 710, 4, 3, 12); <span style="color:#008000;">// cell width, height, cols, rows, count</span>
+    _playerShipScript = SplashKit.LoadAnimationScript(<span style="color:#a31515;">"PlayerShipScript"</span>, <span style="color:#a31515;">"Player.txt"</span>);
+
+    <span style="color:#008000;">// Create the animation</span>
+    _playerAnimation = _playerShipScript.CreateAnimation(<span style="color:#a31515;">"Flying"</span>);
+
+    <span style="color:#008000;">// Create a drawing option</span>
+    _opt = SplashKit.OptionWithAnimation(_playerAnimation);
+    _opt.ScaleX = 0.15f;
+    _opt.ScaleY = 0.15f;
+    _rotation = 90;
+    _playerState = PlayerStates.Idle;
+}</code></pre></div>
+	<p>Ok what the hell did I do?<br>
+		First things first, the Initialisation of Player says "base" in it. Thats going to feed what we want into the Initialisation of the SpaceThing, so we dont have to deal with creating position, velocity or radius variables again.
+		Ok inside I created the _playerShip, and gave it the name of the image file.<br>
+		Next i set the cell details, this is how SplashKit known what was in the image, i gave it the width and heigh of each frame inside the image, as well as how many images where inside and their layout.<br>
+		I created the _playerAnimation and set it to "Flying", for no particular reason.<br>
+		I created the _opt, and scaled the image to 15% of its original size.<br><br>
+		Next, I created two variables a _rotation variable, and a _playerState variable.<br>
+		The _rotation variable will decide where the spaceship is pointing, and the _playerState variable, is an enum, which can be one of 4 statess of the spaceship.<br>
+		This variable will decide which animation to show.<br><br>
+
+		Ok now we can set the Move method, and create a Rotate and PlayerState:
+	</p>
+	<div class="code"><pre style="margin:0em; overflow:auto;"><code style="font-family:Consolas,&quot;Courier New&quot;,Courier,Monospace; font-size:10pt; color:#000000;"><span style="color:#0000ff;">public</span> <span style="color:#0000ff;">override</span> <span style="color:#0000ff;">void</span> Move()
+{
+    Position[0] += Velocity[0];
+    Position[1] += Velocity[1];
+}
+
+<span style="color:#0000ff;">public</span> <span style="color:#0000ff;">int</span> Rotation
+{
+    <span style="color:#0000ff;">get</span> =&gt; _rotation;
+    <span style="color:#0000ff;">set</span> =&gt; _rotation = value;
+}
+
+
+<span style="color:#0000ff;">public</span> PlayerStates PlayerState
+{
+    <span style="color:#0000ff;">set</span> =&gt; _playerState = value;
+}</code></pre>
+	</div>
+	<p>Those ones are self explanitory so, I'm not gonna explain them.<br>
+	I'll just move on the the Draw method. Its another big one so buckle up!</p>
+	<div class="code"><pre style="margin:0em; overflow:auto;"><code style="font-family:Consolas,&quot;Courier New&quot;,Courier,Monospace; font-size:10pt; color:#000000;"><span style="color:#0000ff;">public</span> <span style="color:#0000ff;">override</span> <span style="color:#0000ff;">void</span> Draw(Window w)
+{
+    <span style="color:#0000ff;">if</span> (_playerState == PlayerStates.Flying)
+    {
+        <span style="color:#0000ff;">if</span> (_playerAnimation.Ended || _playerAnimation.Name != <span style="color:#a31515;">"flying"</span>)
+        {
+            _playerAnimation.Assign(<span style="color:#a31515;">"Flying"</span>);
+        }
+    }
+    <span style="color:#0000ff;">if</span> (_playerState == PlayerStates.Shooting)
+    {
+        <span style="color:#0000ff;">if</span> (_playerAnimation.Ended || _playerAnimation.Name != <span style="color:#a31515;">"shooting"</span>)
+        {
+            _playerAnimation.Assign(<span style="color:#a31515;">"Shooting"</span>);
+        }
+    }
+    <span style="color:#0000ff;">if</span> (_playerState == PlayerStates.ShootFlying)
+    {
+        <span style="color:#0000ff;">if</span> (_playerAnimation.Ended || _playerAnimation.Name != <span style="color:#a31515;">"shootflying"</span>)
+        {
+            _playerAnimation.Assign(<span style="color:#a31515;">"ShootFlying"</span>);
+        }
+    }
+    <span style="color:#0000ff;">if</span> (_playerState == PlayerStates.Idle)
+    {
+        <span style="color:#0000ff;">if</span> (_playerAnimation.Ended || _playerAnimation.Name != <span style="color:#a31515;">"Idle"</span>)
+        {
+            _playerAnimation.Assign(<span style="color:#a31515;">"Idle"</span>);
+        }
+    }
+    w.DrawBitmap(_playerShip, Position[0], Position[1], _opt);
+    _playerAnimation.Update();
+    _opt.Angle = Rotation-90;
+}</code></pre></div>
+	<p>Ok so we check which state we are in, and then we check if either the animation has ended, or of the animation is not the one selected.<br>
+		This is because the animation does not loop on its own, so if you call the flying animation, its going go through the 3 images, and stop.<br>
+		Also, if you set the animation, when the animation is already running, it will restart, hence the two checks.<br><br>
+		Finally we ask the animation to update (this will make the animation go to the next frame or update when neccessary), we set the roation of the image, and we draw it onto the screen.
+		Note that we set the angle to -90 because SplashKit says that 0 degrees is up, but since we are going to be doing some math with the angles, we prefer 0 to be to the right, so its a simple fix.
+		<br><br>
+		Almost done, just a little more...<br>
+		Lets fill in our game loop:
+	</p>
+	<div class="code"><pre style="margin:0em; overflow:auto;"><code style="font-family:Consolas,&quot;Courier New&quot;,Courier,Monospace; font-size:10pt; color:#000000;"><span style="color:#0000ff;">while</span>(! w.CloseRequested)
+{
+
+    <span style="color:#0000ff;">if</span> ( SplashKit.KeyDown(KeyCode.UpKey) && SplashKit.KeyDown(KeyCode.SpaceKey))
+    {
+        player.Velocity[0] -= 0.05*Math.Cos(player.Rotation * (Math.PI) / 180);
+        player.Velocity[1] -= 0.05*Math.Sin(player.Rotation * (Math.PI) / 180);
+        player.PlayerState = Player.PlayerStates.ShootFlying;
+    }
+    <span style="color:#0000ff;">else</span> <span style="color:#0000ff;">if</span> ( SplashKit.KeyDown(KeyCode.UpKey))
+    {
+        player.Velocity[0] -= 0.05*Math.Cos(player.Rotation * (Math.PI) / 180);
+        player.Velocity[1] -= 0.05*Math.Sin(player.Rotation * (Math.PI) / 180);
+        player.PlayerState = Player.PlayerStates.Flying;
+
+    }
+    <span style="color:#0000ff;">else</span> <span style="color:#0000ff;">if</span> ( SplashKit.KeyDown(KeyCode.SpaceKey))
+    {
+        player.PlayerState = Player.PlayerStates.Shooting;
+    }
+    <span style="color:#0000ff;">else</span>
+    {
+        player.PlayerState = Player.PlayerStates.Idle;
+    }
+
+    <span style="color:#0000ff;">if</span> ( SplashKit.KeyDown(KeyCode.LeftKey) && !SplashKit.KeyDown(KeyCode.RightKey))
+    {
+        player.Rotation -= 3;
+        <span style="color:#0000ff;">if</span> (player.Rotation &lt; 0)
+        {
+            player.Rotation += 360;
+        }
+
+    }
+    <span style="color:#0000ff;">else</span> <span style="color:#0000ff;">if</span> ( SplashKit.KeyDown(KeyCode.RightKey) && !SplashKit.KeyDown(KeyCode.LeftKey) )
+    {
+        player.Rotation += 3;
+        <span style="color:#0000ff;">if</span> (player.Rotation &gt; 360)
+        {
+            player.Rotation -= 360;
+        }
+
+    }
+
+    screen.Move(player);
+    screen.Draw(w, player);
+
+}</code></pre></div>
+	<p>
+		The first set of if statements check for the spacebar and the up arrowkey, because these decide which animation to show, and we set them accordingly.<br>
+		Inside the up key, is a bunch of maths, and a bit of physics so lets think about that for a second.<br>
+		Velocity is speed, but with a direction, so we can use array of 2 numbers, one for the x and one for the y. And this is how fast the spaceship should go in each direction.<br>
+		Now when you think about a car, if you dont press the accelerator, you slow down, but this is because of friction in the wheels and a bit of air resistance.<br>
+		Spaceships dont have that problem.<br>If you take a look at Newton's first law of motion, you will see the following:<br>
+		"Every object will remain at rest or in uniform motion in a straight line unless compelled to change its state by the action of an external force".<br>
+		This is what most people know as 'intertia'. So, if the spaceship is not moving, we dont want it to move.
+		The thruster of the spaceship will accelerate it in the oposite direction that the thruster is pointing (Newton's third law of motion).<br>
+		And if the spaceship is already moving, it should keep moving in that direction at that speed.<br>
+		<br>
+		Thats a lot of science! Now a little maths (the worst kind of science):
+		We use trigonometry to find the relative magnitude for each direction (x and y) depending on the rotation of the ship.<br>
+		The 0.5 is the actual speed, which we can make bigger or smaller to make the ship accelerate slower or faster.
+		Finally, we ask the screen to move and to draw and we should have a working spaceship.
+		Fingers crossed.
+	</p>
+	<img style="width: 100%;" src="images/piewgame_just_player.gif"></img>
+	<p>Yes! It moves, it animates fire and bullet firing. Someone pop some champaigne its working great.<br>
+		More realisticly though, you tried to compile and got an error.<br>
+		Well, you will get no help from me sir/maam! Learn to copy paste or learn to spell.<br><br>
+		Ok, you've fixed all the errors and.... Damn, ok one more error.<br>
+		Ok, 34th times the charm, compile and.... YES it works. Well i'm happy for you.
+		But lets be honest, this is not exactly a great game, we might have to add a few more things.<br>
+		p.s. That triangle is my mouse, not a small spaceship I didnt tell you about. Though now that I think about it, it looks an awful lot like the original space invaders ship... Anyway, lets move on.
+	</p>
+	<p>
+		Ok, hard part over, except one very very dificult formula, but thats ok because ill give it to you.
+		<br>
+		Ok, lets create the Dumbo, and then I'll let you create the Bullet and the Comet.<br>
+		We can load and draw the Dumbo like this:
+	</p>
+	<div class="code">
+		<pre style="margin:0em; overflow:auto;"><code style="font-family:Consolas,&quot;Courier New&quot;,Courier,Monospace; font-size:10pt; color:#000000;"><span style="color:#008000;">//Initialise image</span>
+<span style="color:#0000ff;">private</span> Bitmap _dumboShip;
+<span style="color:#0000ff;">private</span> <span style="color:#0000ff;">int</span> _rotation;
+<span style="color:#0000ff;">public</span> Dumbo(<span style="color:#0000ff;">double</span>[] position, <span style="color:#0000ff;">double</span>[] velocity) : <span style="color:#0000ff;">base</span>(position, velocity, 36, 10)
+{
+    <span style="color:#008000;">// Load the image</span>
+    _dumboShip = SplashKit.LoadBitmap(<span style="color:#a31515;">"DumboBmp"</span>,<span style="color:#a31515;">"Dumbo.png"</span>);
+    _rotation = 90;
+}
+
+<span style="color:#0000ff;">public</span> <span style="color:#0000ff;">override</span> <span style="color:#0000ff;">void</span> Draw(Window w)
+{
+    <span style="color:#008000;">//Draw the image onto the screen</span>
+    w.DrawBitmap(_dumboShip, Position[0]-398, Position[1]-290, <span style="color:#0000ff;">new</span> DrawingOptions() {ScaleX = 0.15f, ScaleY = 0.15f, Angle = _rotation -90});
+}</code></pre>
+	</div>
+	<p>
+		You should be able to do the Move command yourself.<br>
+		Ok so, you may we wondering, how do you know the radius of this image?<br>
+		Well, I used some my incredible math skills, calculated the exact pixel density of the...<br>
+		I drew a circle, and tried different numbers to see which was closest.<br>
+		And due to the way that SplashKit handles the scale of images, i did the same thing for those two position values 398 and 290.<br>
+	</p>
+	<div class="code"><pre style="margin:0em; overflow:auto;"><code style="font-family:Consolas,&quot;Courier New&quot;,Courier,Monospace; font-size:10pt; color:#000000;">w.DrawCircle(Color.Blue, 500, 200, 22);</code></pre></div>
+	<br><img style="width: 90%;" src="images/Comet_raidus_and_Position_selection.png"></img>
+	<p>
+		Here you can see me testing the sizes and positions of the player, the dumbo, and the max and min size comets.<br>
+		Ok Ill let you make the bullet and the Comet code (skip the DetectCrash for now), but ill give you some hints:<br>
+		<br>
+		For the Comet, we want to be able to create a few different sizes, we do that with some linear equations:
+		Find the smallest and largest sizes of comets that you want and we calculate the mass radius and scale like this:
+	</p>
+	<p class="code">
+From the player:<br>
+A mass of 10 is a radius of 35 therefore:<br>
+10/35=s/22<br>
+s = 6.3 (This is the mass of the small one)<br>
+10/35=b/50<br>
+b = 14.2 (The mass of the big one)<br>
+Therefore:<br>
+Mass: 6-15<br>
+radius: 22-50<br>
+scale 0.3-0.7<br>
+radius=m*mass+c<br>
+radius=28/9*mass+10/3<br>
+scale=m*mass+c<br>
+scale=0.04444*mass+1/30</p>
+	<p>There we go, now with only the mass, you can calculate the radius and the scale.<br>
+	For the bullets, you way want to do something like this:
+	</p>
+	<div class="code"><pre style="margin:0em; overflow:auto;"><code style="font-family:Consolas,&quot;Courier New&quot;,Courier,Monospace; font-size:10pt; color:#000000;"><span style="color:#0000ff;">double</span> omega = Math.Atan(velocity[1]/velocity[0]);
+<span style="color:#0000ff;">int</span> length = 6;
+<span style="color:#0000ff;">double</span> _x1 = -Math.Cos(omega) * length/2;
+<span style="color:#0000ff;">double</span> _y1 = Math.Sin(omega) * length/2;
+...
+w.DrawLine(Color.White, Position[0]-_x1, Position[1]+_y1, Position[0]+_x1, Position[1]-_y1, <span style="color:#0000ff;">new</span> DrawingOptions() {LineWidth = 2});
+</code></pre></div>
+	<p>Thats right... I spent hours trying to do grade 10 maths because i'm just that bad, but you get it handed to you for free. No worries.<br>
+	<br>
+	Alright, finish writing those two classes, and when you are ready take a look at the files i gave you.<br>
+	Screwed up? Not a problem, just copy paste what I gave you, and pretend like you are capable of doing basic maths.<br>
+	No one will be able to tell its not your code...</p>
+	<p>Ok, now remember when we decided to add a radius to all SpaceThings?<br>
+	Well last chance to guess why before I tell you.<br>
+	...<br>
+	Its because... IM LAZY.<br>
+	I made EVERYTHING a circle (hence some poorly drawn spaceships with force fields aroud them), so that there is only one algorithm for detecting crashes and calculating elastic collisions.<br>
+	(•_•)<br>
+(&nbsp;  •_•)>⌐■-■<br>
+(⌐■_■)<br>
+<br>
+Alright, so lets make our DetectCrash Method.<br>
+How do we know if two circles are coliding?
+If you think about two circles touching, you can imagine a triangle with points going from center to center, like so:
+</p>
+<img style="width: 30%;" src="images/two_circles.png"></img>
+<p>The length of the hypotenuse is just the radii of each circle added togeather.<br>And we can compare that to the actual distance using pythagorean theorem:<br>
+if sqrt((x1-x2)^2+(y2-y1)^2) <= radius1+radius2 then the circles are touching/overlapping.<br>
+But because using Math to calculate the square root takes a little longer than regular math, we do it like this:</p>
+<div class="code"><pre style="margin:0em; overflow:auto;"><code style="font-family:Consolas,&quot;Courier New&quot;,Courier,Monospace; font-size:10pt; color:#000000;"> <span style="color:#0000ff;">public</span> <span style="color:#0000ff;">override</span> <span style="color:#0000ff;">bool</span> DetectCrash(<span style="color:#0000ff;">double</span>[] position, <span style="color:#0000ff;">int</span> radius)
+{
+    <span style="color:#008000;">//Intead of using a square root to calculate the hypotinuse, we square the radius, so its quicker.</span>
+    <span style="color:#0000ff;">return</span> (position[0] - Position[0]) * (position[0] - Position[0]) +
+        (position[1] - Position[1]) * (position[1] - Position[1]) &lt; (radius + Radius) * (radius + Radius);
+}</code></pre></div>
+	<p>Ok copy paste that into every SpaceThing and... wait, if we are copying the same code into every SpaceThing, we might as well put the code directly into Spacething.
+		<br>Yup, that sounds reasonable, remove the abstract method in Spacething, and paste taht code directly into SpaceThing.cs.
+		<br><br>
+		Ok we are done with the space things! Yay. All thats left is to make up the rules of the game, and start playing.
+		<br>
+		Ill leave that part up to you. You can make your own game, with your own rules, or do what I did.<br>
+		 If you want to know how i did it, check the folder with my final code, and go ahead and play the game.
+	 </p>
+	 <img style="width: 100%" src="images/final_piewgame.gif"></img>
+	 <p>
+		<br>Fun right? Yes it is.
+		<br>
+		Alright, that's a wrap. Ill see you next time here on C# with Ari (only if i fail this subject and have to redo this project).
+	</p>
+
+
+
+</body>
+</html>
