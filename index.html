@@ -31,7 +31,7 @@
 			Here is a screenshot of what you should accomplish by the end of this article:
 			<br>
 		</p>
-		<img style="width: 100%;" src="images/final_piewgame.png"></img>
+		<img style="width: 100%;" src="final_piewgame.png"></img>
 		<h4>Getting started</h4>
 		<p>
 			To get started, you will need the following:
@@ -50,7 +50,7 @@
 		<p>
 			To help you through this process, here is a UML diagram of what we are going to be building:
 		</p>
-		<img style="width: 100%" src="images/Final_UML_Diagram.png"></img>
+		<img style="width: 100%" src="Final_UML_Diagram.png"></img>
 		<p>Scary! But its not as bad as it... Well it could be worse.</p>
 
 		<h4>Creating the Game</h4>
@@ -258,7 +258,7 @@ Process finished with exit code 0.</p></div>
 	Open up your resources folder i gave you, and you will see this image:
 	</p>
 
-	<img style="width: 50%; background-color:black"  src="images/Player.png"></img>
+	<img style="width: 50%; background-color:black"  src="Player.png"></img>
 
 	<p>
 		What is it?<br>
@@ -482,7 +482,7 @@ i:ShootFlying,7<br>
 		Finally, we ask the screen to move and to draw and we should have a working spaceship.
 		Fingers crossed.
 	</p>
-	<img style="width: 100%;" src="images/piewgame_just_player.gif"></img>
+	<img style="width: 100%;" src="piewgame_just_player.gif"></img>
 	<p>Yes! It moves, it animates fire and bullet firing. Someone pop some champaigne its working great.<br>
 		More realisticly though, you tried to compile and got an error.<br>
 		Well, you will get no help from me sir/maam! Learn to copy paste or learn to spell.<br><br>
@@ -522,7 +522,7 @@ i:ShootFlying,7<br>
 		And due to the way that SplashKit handles the scale of images, i did the same thing for those two position values 398 and 290.<br>
 	</p>
 	<div class="code"><pre style="margin:0em; overflow:auto;"><code style="font-family:Consolas,&quot;Courier New&quot;,Courier,Monospace; font-size:10pt; color:#000000;">w.DrawCircle(Color.Blue, 500, 200, 22);</code></pre></div>
-	<br><img style="width: 90%;" src="images/Comet_raidus_and_Position_selection.png"></img>
+	<br><img style="width: 90%;" src="Comet_raidus_and_Position_selection.png"></img>
 	<p>
 		Here you can see me testing the sizes and positions of the player, the dumbo, and the max and min size comets.<br>
 		Ok Ill let you make the bullet and the Comet code (skip the DetectCrash for now), but ill give you some hints:<br>
@@ -573,7 +573,7 @@ Alright, so lets make our DetectCrash Method.<br>
 How do we know if two circles are coliding?
 If you think about two circles touching, you can imagine a triangle with points going from center to center, like so:
 </p>
-<img style="width: 30%;" src="images/two_circles.png"></img>
+<img style="width: 30%;" src="two_circles.png"></img>
 <p>The length of the hypotenuse is just the radii of each circle added togeather.<br>And we can compare that to the actual distance using pythagorean theorem:<br>
 if sqrt((x1-x2)^2+(y2-y1)^2) <= radius1+radius2 then the circles are touching/overlapping.<br>
 But because using Math to calculate the square root takes a little longer than regular math, we do it like this:</p>
@@ -591,7 +591,7 @@ But because using Math to calculate the square root takes a little longer than r
 		Ill leave that part up to you. You can make your own game, with your own rules, or do what I did.<br>
 		 If you want to know how i did it, check the folder with my final code, and go ahead and play the game.
 	 </p>
-	 <img style="width: 100%" src="images/final_piewgame.gif"></img>
+	 <img style="width: 100%" src="final_piewgame.gif"></img>
 	 <p>
 		<br>Fun right? Yes it is.
 		<br>
